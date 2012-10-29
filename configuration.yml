@@ -1,0 +1,2 @@
+db:
+    configuration: { dir: application/configs, filename: phinx.yml }

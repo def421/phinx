@@ -33,8 +33,9 @@ use Symfony\Component\Console\Application,
     Symfony\Component\Console\Input\InputDefinition,
     Symfony\Component\Console\Input\InputOption,
     Symfony\Component\Console\Output\OutputInterface,
-    Phinx\Console\Command;
-
+    Phinx\Console\Command,
+    Phinx\Config\ApplicationConfig,
+    Phinx\Registry\Registry;
 /**
  * Phinx console application.
  *
@@ -50,9 +51,13 @@ class PhinxApplication extends Application
      * @param string $version The Application Version
      * @return void
      */
-    public function __construct($version)
+    public function __construct($version, $configPath = '')
     {
+
         parent::__construct('Phinx by Rob Morgan.', $version);
+
+        $ApplicationConfig = new ApplicationConfig($configPath);
+        Registry::set('configuration', $ApplicationConfig);
 
         $this->add(new Command\Init());
         $this->add(new Command\Create());

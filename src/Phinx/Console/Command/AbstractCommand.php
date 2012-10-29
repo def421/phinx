@@ -9,7 +9,9 @@ use Symfony\Component\Config\FileLocator,
     Symfony\Component\Console\Output\OutputInterface,
     Phinx\Config\Config,
     Phinx\Migration\Manager,
-    Phinx\Adapter\AdapterInterface;
+    Phinx\Adapter\AdapterInterface,
+    Phinx\Registry\Registry,
+    Phinx\Config\ApplicationConfig;
 
 /**
  * Abstract command, contains bootstrapping info
@@ -48,25 +50,30 @@ abstract class AbstractCommand extends Command
      */
     public function bootstrap(InputInterface $input, OutputInterface $output)
     {
-        /**
-         * Bootstrap
-         */
+        $oApplicationConfig = Registry::get('configuration');
+        $arrConfiguration = $oApplicationConfig->toArray();
+
+        $path = $arrConfiguration['db']['configuration']['dir'];
+        $fileName = $arrConfiguration['db']['configuration']['filename'];
+        $configFilePath = $path . DIRECTORY_SEPARATOR . $fileName;
+
+        // if reconfigure
         $configFile = $input->getOption('configuration');
-        
-        if (null === $configFile) {
-            $configFile = 'phinx.yml';
+        if (null !== $configFile) {
+            $cwd = getcwd();
+
+            // locate the phinx config file (default: phinx.yml)
+            // TODO - In future walk the tree in reverse (max 10 levels)
+            $locator = new FileLocator(array(
+                $cwd . DIRECTORY_SEPARATOR
+            ));
+
+            // Locate() throws an exception if the file does not exist
+            $configFilePath = $locator->locate($configFile, $cwd, $first = true);
+            $oApplicationConfig = new ApplicationConfig($configFilePath);
+            Registry::set('configuration', $oApplicationConfig);
         }
-        
-        $cwd = getcwd();
-        
-        // locate the phinx config file (default: phinx.yml)
-        // TODO - In future walk the tree in reverse (max 10 levels)
-        $locator = new FileLocator(array(
-            $cwd . DIRECTORY_SEPARATOR
-        ));
-        
-        // Locate() throws an exception if the file does not exist
-        $configFilePath = $locator->locate($configFile, $cwd, $first = true);
+
 
         $output->writeln('<info>using config</info> .' . str_replace(getcwd(), '', realpath($configFilePath)));
         
