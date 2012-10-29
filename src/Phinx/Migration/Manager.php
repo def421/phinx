@@ -120,6 +120,7 @@ class Manager
      */
     public function migrate($environment, $version = null)
     {
+        $output = $this->getOutput();
         $migrations = $this->getMigrations();
         $env = $this->getEnvironment($environment);
         $versions = $env->getVersions();
@@ -208,7 +209,7 @@ class Manager
         $migrations = $this->getMigrations();
         $env = $this->getEnvironment($environment);
         $versions = $env->getVersions();
-        $current = $env->getCurrentVersion();
+        //$current = $env->getCurrentVersion();
         
         ksort($migrations);
         sort($versions);
