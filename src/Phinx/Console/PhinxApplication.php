@@ -56,8 +56,7 @@ class PhinxApplication extends Application
 
         parent::__construct('Phinx by Rob Morgan.', $version);
 
-        $ApplicationConfig = new ApplicationConfig($configPath);
-        Registry::set('configuration', $ApplicationConfig);
+        $this->initApplicationConfig($configPath);
 
         $this->add(new Command\Init());
         $this->add(new Command\Create());
@@ -83,5 +82,23 @@ class PhinxApplication extends Application
         }
          
         return parent::doRun($input, $output);
+    }
+
+    public function initApplicationConfig($configPath)
+    {
+        $tmpConfigPath = $configPath . '.tmp';
+        if (!is_file($configPath) && is_file($tmpConfigPath)) {
+            $tmpConfig = file_get_contents($tmpConfigPath);
+            if (false === file_put_contents($configPath, $tmpConfig)) {
+                throw new \RuntimeException(sprintf(
+                    'The file "%s" could not be written to',
+                    $configPath
+                ));
+            }
+        }
+        
+        $ApplicationConfig = new ApplicationConfig($configPath);
+        Registry::set('configuration', $ApplicationConfig);
+
     }
 }

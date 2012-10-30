@@ -50,11 +50,11 @@ class Init extends Command
 
         // rewrite db config file if need
         $bWrite = true;
-        $message = '<info>created</info> ./' . str_replace(getcwd(), '', $filePath);
+        $message = '<info>created</info> .' . str_replace(getcwd(), '', $filePath);
         if (file_exists($filePath)) {
             $bWrite = $this->askRewrite($output, $filePath);
             if ($bWrite) {
-                $message = '<info>rewrite</info> ./' . str_replace(getcwd(), '', $filePath);
+                $message = '<info>rewrite</info> .' . str_replace(getcwd(), '', $filePath);
             }
         }
 
@@ -72,9 +72,8 @@ class Init extends Command
             $output->writeln($message);
         }
 
-
         //rewrite db config path in configuration
-        $arrConfiguration['db']['configuration']['dir'] = dirname($filePath);
+        $arrConfiguration['db']['configuration']['dir'] = str_replace(getcwd(), '', dirname($filePath));
         $oApplicationConfig->setConfiguration($arrConfiguration);
         $oApplicationConfig->save();
         Registry::set('configuration', $oApplicationConfig);

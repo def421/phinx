@@ -7,8 +7,9 @@ tests/log
 .buildpath
 .project
 .settings
+configuration.yml
 dist
 tests/TestConfiguration.php
 docs/_build
 vendor
-migrations
+migrations  

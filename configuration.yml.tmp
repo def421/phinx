@@ -1,2 +1,4 @@
 db:
-    configuration: { dir: /application/configs, filename: phinx.yml }
+  configuration:
+    dir: ""
+    filename: "phinx.yml"
