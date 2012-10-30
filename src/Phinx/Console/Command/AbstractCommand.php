@@ -53,7 +53,7 @@ abstract class AbstractCommand extends Command
         $oApplicationConfig = Registry::get('configuration');
         $arrConfiguration = $oApplicationConfig->toArray();
 
-        $path = getcwd() + $arrConfiguration['db']['configuration']['dir'];
+        $path = getcwd() . $arrConfiguration['db']['configuration']['dir'];
         $fileName = $arrConfiguration['db']['configuration']['filename'];
         $configFilePath = $path . DIRECTORY_SEPARATOR . $fileName;
 
